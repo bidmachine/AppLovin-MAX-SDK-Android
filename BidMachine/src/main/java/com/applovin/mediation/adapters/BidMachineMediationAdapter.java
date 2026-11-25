@@ -1,6 +1,7 @@
 package com.applovin.mediation.adapters;
 
 import android.app.Activity;
+import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -333,7 +334,7 @@ public class BidMachineMediationAdapter
 
         // Check if adaptive banner sizes should be used
         final boolean isAdaptiveBanner = parameters.getServerParameters().getBoolean( "adaptive_banner", false );
-        final BannerAdSize adSize = toAdSize( adFormat, isAdaptiveBanner );
+        final BannerAdSize adSize = toAdSize( adFormat, isAdaptiveBanner, parameters, getApplicationContext() );
         final AdViewLoadCallback loadCallback = new AdViewLoadCallback( listener );
         final String bidResponse = parameters.getBidResponse();
         if ( bidResponse != null )
@@ -434,14 +435,15 @@ public class BidMachineMediationAdapter
         String placementId = parameters.getThirdPartyAdPlacementId();
         if ( AppLovinSdkUtils.isValidString( placementId ) )
         {
-            return new Placement(placementId);
+            return new Placement( placementId );
         }
-        else {
+        else
+        {
             return null;
         }
     }
 
-    private BannerAdSize toAdSize(final MaxAdFormat adFormat, boolean isAdaptiveBanner)
+    private BannerAdSize toAdSize(final MaxAdFormat adFormat, final boolean isAdaptiveBanner, final MaxAdapterParameters parameters, final Context context)
     {
         if ( isAdaptiveBanner && isAdaptiveAdViewFormat( adFormat, parameters ) )
         {
@@ -474,13 +476,13 @@ public class BidMachineMediationAdapter
             int inlineMaximumHeight = getInlineAdaptiveAdViewMaximumHeight( parameters );
             if ( inlineMaximumHeight > 0 )
             {
-                return BannerAdSize.adaptive(adaptiveAdWidth, inlineMaximumHeight);
+                return BannerAdSize.adaptive( adaptiveAdWidth, inlineMaximumHeight );
             }
         }
 
         // Return anchored size by default
         final int anchoredHeight = MaxAdFormat.BANNER.getAdaptiveSize( adaptiveAdWidth, context ).getHeight();
-        return BannerAdSize.adaptive(adaptiveAdWidth, anchoredHeight);
+        return BannerAdSize.adaptive( adaptiveAdWidth, anchoredHeight );
     }
 
     private void updateSettings(MaxAdapterParameters parameters)
