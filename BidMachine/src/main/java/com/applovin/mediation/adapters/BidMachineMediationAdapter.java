@@ -66,9 +66,9 @@ public class BidMachineMediationAdapter
         extends MediationAdapterBase
         implements MaxSignalProvider, MaxInterstitialAdapter, MaxRewardedAdapter, MaxAdViewAdapter, MaxNativeAdAdapter
 {
-    private static final int                DEFAULT_IMAGE_TASK_TIMEOUT_SECONDS = 10;
-    private static final AtomicBoolean      initialized                        = new AtomicBoolean();
-    private static       BidMachineInstance bidMachineInstance;
+    private static final    int                DEFAULT_IMAGE_TASK_TIMEOUT_SECONDS = 10;
+    private static final    AtomicBoolean      initialized                        = new AtomicBoolean();
+    private static volatile BidMachineInstance bidMachineInstance;
 
     private final Object adLock = new Object();
 
@@ -78,10 +78,10 @@ public class BidMachineMediationAdapter
     private volatile NativeAd       nativeAd;
     private          boolean        isDestroyed;
 
-    public BidMachineMediationAdapter(AppLovinSdk sdk) { super( sdk ); }
+    public BidMachineMediationAdapter(final AppLovinSdk sdk) { super( sdk ); }
 
     @Override
-    public void initialize(MaxAdapterInitializationParameters parameters, @Nullable final Activity activity, final OnCompletionListener onCompletionListener)
+    public void initialize(final MaxAdapterInitializationParameters parameters, @Nullable final Activity activity, final OnCompletionListener onCompletionListener)
     {
         if ( initialized.compareAndSet( false, true ) )
         {
@@ -222,7 +222,7 @@ public class BidMachineMediationAdapter
     }
 
     @Override
-    public void loadInterstitialAd(MaxAdapterResponseParameters parameters, @Nullable final Activity activity, MaxInterstitialAdapterListener listener)
+    public void loadInterstitialAd(final MaxAdapterResponseParameters parameters, @Nullable final Activity activity, final MaxInterstitialAdapterListener listener)
     {
         log( "Loading interstitial ad..." );
 
@@ -244,13 +244,13 @@ public class BidMachineMediationAdapter
         }
         else
         {
-            Placement placement = createPlacementOrNull(parameters);
+            Placement placement = createPlacementOrNull( parameters );
             bidMachineInstance.loadInterstitial( placement, loadCallback );
         }
     }
 
     @Override
-    public void showInterstitialAd(MaxAdapterResponseParameters parameters, @Nullable final Activity activity, MaxInterstitialAdapterListener listener)
+    public void showInterstitialAd(final MaxAdapterResponseParameters parameters, @Nullable final Activity activity, final MaxInterstitialAdapterListener listener)
     {
         log( "Showing interstitial ad..." );
 
@@ -269,7 +269,7 @@ public class BidMachineMediationAdapter
     }
 
     @Override
-    public void loadRewardedAd(MaxAdapterResponseParameters parameters, @Nullable final Activity activity, MaxRewardedAdapterListener listener)
+    public void loadRewardedAd(final MaxAdapterResponseParameters parameters, @Nullable final Activity activity, final MaxRewardedAdapterListener listener)
     {
         log( "Loading rewarded ad..." );
 
@@ -291,13 +291,13 @@ public class BidMachineMediationAdapter
         }
         else
         {
-            Placement placement = createPlacementOrNull(parameters);
+            Placement placement = createPlacementOrNull( parameters );
             bidMachineInstance.loadRewarded( placement, loadCallback );
         }
     }
 
     @Override
-    public void showRewardedAd(MaxAdapterResponseParameters parameters, @Nullable final Activity activity, MaxRewardedAdapterListener listener)
+    public void showRewardedAd(final MaxAdapterResponseParameters parameters, @Nullable final Activity activity, final MaxRewardedAdapterListener listener)
     {
         log( "Showing rewarded ad..." );
 
@@ -318,7 +318,7 @@ public class BidMachineMediationAdapter
     }
 
     @Override
-    public void loadAdViewAd(MaxAdapterResponseParameters parameters, MaxAdFormat adFormat, @Nullable final Activity activity, MaxAdViewAdapterListener listener)
+    public void loadAdViewAd(final MaxAdapterResponseParameters parameters, final MaxAdFormat adFormat, @Nullable final Activity activity, final MaxAdViewAdapterListener listener)
     {
         log( "Loading " + adFormat.getLabel() + " ad..." );
 
@@ -343,13 +343,13 @@ public class BidMachineMediationAdapter
         }
         else
         {
-            Placement placement = createPlacementOrNull(parameters);
+            Placement placement = createPlacementOrNull( parameters );
             bidMachineInstance.loadBanner( placement, adSize, loadCallback );
         }
     }
 
     @Override
-    public void loadNativeAd(MaxAdapterResponseParameters parameters, @Nullable final Activity activity, MaxNativeAdAdapterListener listener)
+    public void loadNativeAd(final MaxAdapterResponseParameters parameters, @Nullable final Activity activity, final MaxNativeAdAdapterListener listener)
     {
         log( "Loading native ad..." );
 
@@ -371,7 +371,7 @@ public class BidMachineMediationAdapter
         }
         else
         {
-            Placement placement = createPlacementOrNull(parameters);
+            Placement placement = createPlacementOrNull( parameters );
             bidMachineInstance.loadNative( placement, loadCallback );
         }
     }
@@ -449,6 +449,7 @@ public class BidMachineMediationAdapter
         {
             return getAdaptiveAdSize( parameters, context );
         }
+
         if ( adFormat == MaxAdFormat.BANNER )
         {
             return BannerAdSize.Banner;
